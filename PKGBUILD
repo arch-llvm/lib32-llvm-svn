@@ -16,11 +16,11 @@ pkgname=(
 )
 _pkgname='llvm'
 
-pkgver=3.8.0svn_r244099
+pkgver=3.8.0svn_r244154
 pkgrel=1
 
 arch=('x86_64')
-url="http://llvm.org"
+url='http://llvm.org/'
 license=('custom:University of Illinois')
 
 makedepends=(
@@ -35,8 +35,8 @@ options=('staticlibs' '!strip')
 
 source=(
     "${_pkgname}::svn+http://llvm.org/svn/llvm-project/llvm/trunk"
-    "clang::svn+http://llvm.org/svn/llvm-project/cfe/trunk"
-    "compiler-rt::svn+http://llvm.org/svn/llvm-project/compiler-rt/trunk"
+    'clang::svn+http://llvm.org/svn/llvm-project/cfe/trunk'
+    'compiler-rt::svn+http://llvm.org/svn/llvm-project/compiler-rt/trunk'
     llvm_tools_shlib_CMakeLists.patch
 )
 
@@ -72,7 +72,7 @@ prepare() {
 build() {
     cd "${srcdir}/build"
 
-    export PKG_CONFIG_PATH="/usr/lib32/pkgconfig"
+    export PKG_CONFIG_PATH='/usr/lib32/pkgconfig'
     _ffi_include_flags=$(pkg-config --cflags-only-I libffi)
     _ffi_libs_flags=$(pkg-config --libs-only-L libffi)
 
@@ -114,7 +114,7 @@ build() {
     )
 
     # Finally, here we set the additional components to export from libLLVM.so
-    _dylib_add_comp="Option;ProfileData;"
+    _dylib_add_comp='Option;ProfileData;'
 
     # LLVM_BUILD_LLVM_DYLIB: Build the dynamic runtime libraries (e.g. libLLVM.so).
     # LLVM_DYLIB_EXPORT_ALL: Export all symbols in the dynamic libs, not just the C API.
@@ -122,7 +122,7 @@ build() {
     # LLVM_TARGET_ARCH:      Theoretically, LLVM_BUILD_32_BITS should be used instead, which
     #                        would also make CMAKE_C{,XX}_FLAGS redundant, but that option
     #                        makes linking fail, because of incompatible architectures.
-    cmake -G "Unix Makefiles" \
+    cmake -G 'Unix Makefiles' \
         -DCMAKE_BUILD_TYPE:STRING=Release \
         -DCMAKE_INSTALL_PREFIX:PATH=/usr \
         -DLLVM_LIBDIR_SUFFIX:STRING=32 \
@@ -150,8 +150,8 @@ build() {
 }
 
 package_lib32-llvm-svn() {
-    pkgdesc="Low Level Virtual Machine (32-bit)"
-    depends=("lib32-llvm-libs-svn=$pkgver-$pkgrel" 'llvm')
+    pkgdesc='The LLVM Compiler Infrastructure (32-bit)'
+    depends=("lib32-llvm-libs-svn=${pkgver}-${pkgrel}" 'llvm')
     provides=('lib32-llvm')
     replaces=('lib32-llvm')
     conflicts=('lib32-llvm')
@@ -192,7 +192,7 @@ package_lib32-llvm-svn() {
 }
 
 package_lib32-llvm-libs-svn() {
-    pkgdesc="Low Level Virtual Machine (runtime library, 32-bit)"
+    pkgdesc='The LLVM Compiler Infrastructure (runtime library, 32-bit)'
     depends=('lib32-gcc-libs' 'lib32-zlib' 'lib32-libffi')
     provides=('lib32-llvm-libs')
     replaces=('lib32-llvm-libs')
@@ -224,9 +224,9 @@ package_lib32-llvm-libs-svn() {
 }
 
 package_lib32-clang-svn() {
-    pkgdesc="C language family frontend for LLVM (32-bit)"
-    url="http://clang.llvm.org/"
-    depends=('gcc-multilib' 'clang' "lib32-llvm-svn=$pkgver-$pkgrel")
+    pkgdesc='C language family frontend for LLVM (32-bit)'
+    url='http://clang.llvm.org/'
+    depends=('gcc-multilib' 'clang' "lib32-llvm-svn=${pkgver}-${pkgrel}")
     provides=('lib32-clang')
     replaces=('lib32-clang')
     conflicts=('lib32-clang')
