@@ -16,7 +16,7 @@ pkgname=(
 )
 _pkgname='llvm'
 
-pkgver=3.8.0svn_r244165
+pkgver=3.8.0svn_r244234
 pkgrel=1
 
 arch=('x86_64')
@@ -144,9 +144,11 @@ build() {
  
     # Must run this target independently, or else docs/cmake_install.cmake will fail.
     #
-    # WARNING: Make sure that there isn't an incompatible llvm-ocaml package installed,
-    # or else the build will fail with "inconsistent assumptions over interface" errors.
-    #make ocaml_doc
+    # NOTICE: We don't need the documentation for the multilib package, but running
+    # this target is still required if ocaml-{ctypes,findlib} happen to be installed.
+    # While it's always a good idea to build the packages in a clean chroot, let's be
+    # a bit more user friendly (and reduce the number of complaints).
+    [[ $(pacman -Qq ocaml-{ctypes,findlib} 2>/dev/null | wc -l) -eq 2 ]] && make ocaml_doc
 
     make
 }
