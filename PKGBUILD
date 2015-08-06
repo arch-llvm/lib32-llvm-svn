@@ -16,7 +16,7 @@ pkgname=(
 )
 _pkgname='llvm'
 
-pkgver=3.8.0svn_r244154
+pkgver=3.8.0svn_r244165
 pkgrel=1
 
 arch=('x86_64')
@@ -24,10 +24,12 @@ url='http://llvm.org/'
 license=('custom:University of Illinois')
 
 makedepends=(
-    'gcc-multilib'
     'cmake'
-    'subversion'
+    'gcc-multilib'
     'lib32-libffi'
+    'lib32-libxml2'
+    'python2'
+    'subversion'
 )
 
 # this is always the latest svn so debug info can be useful
@@ -144,14 +146,17 @@ build() {
     #
     # WARNING: Make sure that there isn't an incompatible llvm-ocaml package installed,
     # or else the build will fail with "inconsistent assumptions over interface" errors.
-    make ocaml_doc
+    #make ocaml_doc
 
     make
 }
 
 package_lib32-llvm-svn() {
     pkgdesc='The LLVM Compiler Infrastructure (32-bit)'
-    depends=("lib32-llvm-libs-svn=${pkgver}-${pkgrel}" 'llvm')
+    depends=(
+        "lib32-llvm-libs-svn=${pkgver}-${pkgrel}"
+        'llvm'
+    )
     provides=('lib32-llvm')
     replaces=('lib32-llvm')
     conflicts=('lib32-llvm')
@@ -178,6 +183,8 @@ package_lib32-llvm-svn() {
 
     # Remove all bits that we don't need in multilib
     # Note that `find` will always fail because of the non-empty directories
+    echo 'NOTE: The errors "find: cannot delete ... Directory not empty"'
+    echo '      that immediately follow are harmless and safe to ignore.'
     find "${pkgdir}/usr/" \
         -not -path "${pkgdir}/usr/bin/llvm-config" \
         -not -path "${pkgdir}/usr/include/llvm/Config/llvm-config.h" \
@@ -193,7 +200,12 @@ package_lib32-llvm-svn() {
 
 package_lib32-llvm-libs-svn() {
     pkgdesc='The LLVM Compiler Infrastructure (runtime library, 32-bit)'
-    depends=('lib32-gcc-libs' 'lib32-zlib' 'lib32-libffi')
+    depends=(
+        'lib32-gcc-libs'
+        'lib32-libffi'
+        'lib32-ncurses'
+        'lib32-zlib'
+    )
     provides=('lib32-llvm-libs')
     replaces=('lib32-llvm-libs')
     conflicts=('lib32-llvm-libs')
@@ -226,7 +238,10 @@ package_lib32-llvm-libs-svn() {
 package_lib32-clang-svn() {
     pkgdesc='C language family frontend for LLVM (32-bit)'
     url='http://clang.llvm.org/'
-    depends=('gcc-multilib' 'clang' "lib32-llvm-svn=${pkgver}-${pkgrel}")
+    depends=(
+        'clang'
+        "lib32-llvm-svn=${pkgver}-${pkgrel}"
+    )
     provides=('lib32-clang')
     replaces=('lib32-clang')
     conflicts=('lib32-clang')
