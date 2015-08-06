@@ -201,7 +201,7 @@ package_lib32-llvm-svn() {
 }
 
 package_lib32-llvm-libs-svn() {
-    pkgdesc='The LLVM Compiler Infrastructure (runtime library, 32-bit)'
+    pkgdesc='The LLVM Compiler Infrastructure (runtime libraries, 32-bit)'
     depends=(
         'lib32-gcc-libs'
         'lib32-libffi'
